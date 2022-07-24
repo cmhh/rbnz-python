@@ -1,6 +1,6 @@
 # Fetch Time Series Data from RBNZ Website
 
-**NOTE**: I previously created a [repository](https://github.com/cmhh/rbnz) which included a Scala program that did the same thing as this repo, and also included a little data service that could be used to serve the result.  For various reasons, I needed to do something very similar using Python, so thought I'd post the code.  I do not particularly like Python, am not particularly adept at it, and I doubt this code will present as very _Pythonistic_.  But I appreciate that anybody looking at this will likely prefer Python code over Scala code, so here it is...
+**NOTE**: I previously created a [repository](https://github.com/cmhh/rbnz) which included a Scala program that largely did the same thing as this repo, and also included a little data service that could be used to serve the result.  For various reasons, I needed to do something very similar using Python, so thought I'd post the code.  I do not particularly like Python, am not particularly adept at it, and I doubt this code will present as very _Pythonistic_.  But I appreciate that anybody looking at this will likely prefer Python code over Scala code, so here it is...
 
 Data on the [Reserve Bank of New Zealand](https://www.rbnz.govt.nz/statistics) website can be a little awkward to source and use, painfully so for those who wish to automate the process.  First, all data is stored in Excel spreasheets which aren't directly machine readable.  But even then, the data isn't easily used because the files themselves, due to the way they're hosted, cannot be directly downloaded in tools such as R or Python, or common clients such as `curl` and `wget`.  For example, the following R command will fail outright:
 
@@ -26,7 +26,7 @@ Excel files will successfully import if they:
 * data in `Data` tab must start in row 6, with series IDs in row 5
 * `Series Definitions` tab must have 5 columns with header row.
 
-Note that there is a single series which has a non-numeric value, `EXRT.YS45.ZZB17`, which is date-valued.  Rather than create a database schema that can handle multiple types, I just dropped this one series.  
+Note that there is a single series which has a non-numeric value, `EXRT.YS45.ZZB17`, which is date-valued.  Rather than create a database schema that can handle multiple types, I just dropped this one series.  **There are a few spreadsheets which _should_ have imported correctly but didn't, and I'll track them down and fix the issue shortly.**  
 
 
 ## Selenium / Chrome / Chromedriver
