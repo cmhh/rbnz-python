@@ -33,6 +33,17 @@ Note that there is a single series which has a non-numeric value, `EXRT.YS45.ZZB
 
 The program uses Selenium webdriver, and assumes Chrome and [chromedriver](https://chromedriver.chromium.org/) are available, and working correctly.  One easy way to ensure this is the case is to use Docker, and a sufficient `Dockerfile` is provided.
 
+Another relatively easy option, if you're using Chrome locally (if you're using Firefox, say, you'll need to edit `browser.py`), is to create a virtual environment and then put a copy of chromedriver in the `bin` or `Scripts` folder of your virtual environment.  For example, something like:
+
+```bash
+python3 -m venv venv
+cd venv/bin
+wget https://chromedriver.storage.googleapis.com/104.0.5112.79/chromedriver_linux64.zip
+unzip chromedriver_linux64.zip
+chmod +x chromedriver
+rm chromedriver_linux64.zip
+```
+
 
 ## Using the Scripts with Docker
 

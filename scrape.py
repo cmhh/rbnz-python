@@ -39,27 +39,26 @@ def download() -> Tuple[str, list[str]]:
     A tuple containing the download folder name, and the list of all downloaded
     files.
   """
-  wd = f"{tempfile.gettempdir()}/{str(uuid4())}"
+  wd = os.path.join(tempfile.gettempdir(), str(uuid4()))
   os.mkdir(wd)
-  driver = browser.getHeadlessDriver(wd)
-  driver.get("https://www.rbnz.govt.nz/statistics/series/data-file-index-page")
-  rows = driver.find_elements(By.CSS_SELECTOR, ".table-wrapper tbody > tr")
-  links = list(map(_process_row, rows))
+  with browser.getHeadlessDriver(wd) as driver:
+    driver.get("https://www.rbnz.govt.nz/statistics/series/data-file-index-page")
+    rows = driver.find_elements(By.CSS_SELECTOR, ".table-wrapper tbody > tr")
+    links = list(map(_process_row, rows))
+    
+    for xs in links:
+      for x in xs:
+        driver.get(x)
+        # to be complient with RBNZ terms of use:
+        time.sleep(60) 
+    
+    files = []
+    for xs in links:
+      for x in xs:
+        f = os.path.join(wd, _filename_from_url(x))
+        if os.path.exists(f):
+          files.append(f)
   
-  for xs in links:
-    for x in xs:
-      driver.get(x)
-      # to be complient with RBNZ terms of use:
-      time.sleep(60) 
-  
-  files = []
-  for xs in links:
-    for x in xs:
-      f = f"{wd}/{_filename_from_url(x)}"
-      if os.path.exists(f):
-        files.append(f)
-  
-  driver.close()
   return (wd, files)
 
 
@@ -96,7 +95,7 @@ def import_series_data(filename: str, res: dict[str, Series] = {}) -> dict[str, 
   id_row = next(x for i,x in enumerate(ws.rows) if i==4)
   ids = [x.value.upper() for i,x in enumerate(id_row) if i > 0 and x.value]  
   dates = [str(x[0].value) for i, x in enumerate(ws.rows) if i > 4 and x[0].internal_value]
-  
+
   def safe_value(cell):
     if y.value:
       if str(y.value).strip() == "-":
@@ -160,8 +159,8 @@ def _process_dir(dir: str) -> Tuple[dict[str, Definition], dict[str, Series]]:
   defs = {}
   for f in os.listdir(dir):
     if "xlsx" in f:
-      import_series_data(f"{dir}/{f}", data)
-      import_series_definitions(f"{dir}/{f}", defs)
+      import_series_data(os.path.join(dir, f), data)
+      import_series_definitions(os.path.join(dir, f), defs)
   return (defs, data)
 
 
@@ -220,11 +219,11 @@ def main():
   conn = connect(sys.argv[1])
   df_to_sql(conn, defs, "series_definition")
   df_to_sql(conn, series, "series")
-  conn.execute("create index idx1 on definitions(id);")
+  conn.execute("create index idx1 on series_definition(id);")
   conn.execute("create index idx2 on series(id, date);")
   conn.commit()
   conn.close()
 
 
 if __name__ == "__main__":
-    main()
+  main()
