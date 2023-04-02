@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 import random
+import os
 
 def userAgent() -> str:
   """Return driver user agent.
@@ -9,7 +10,7 @@ def userAgent() -> str:
       str: Driver user agent
   """
   options = webdriver.ChromeOptions()
-  options.add_argument("headless")
+  options.add_argument("--headless=new")
   options.add_argument("no-sandbox")
   options.add_argument("remote-debugging-port=9222")
   options.add_argument("disable-gpu")
@@ -37,8 +38,11 @@ def getHeadlessDriver(workdir: str) -> WebDriver:
   Returns:
       WebDriver: Web driver.
   """
+  if not os.path.exists(workdir):
+    os.mkdir(workdir)
+  
   options = webdriver.ChromeOptions()
-  options.add_argument("headless")
+  options.add_argument("--headless=new")
   options.add_argument("no-sandbox")
   options.add_argument(f"port={random.randint(4001,4999)}")
   options.add_argument(f"remote-debugging-port={random.randint(9001,9999)}")

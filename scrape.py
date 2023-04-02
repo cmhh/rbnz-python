@@ -41,24 +41,26 @@ def download() -> Tuple[str, list[str]]:
   """
   wd = os.path.join(tempfile.gettempdir(), str(uuid4()))
   os.mkdir(wd)
+  
   with browser.getHeadlessDriver(wd) as driver:
     driver.get("https://www.rbnz.govt.nz/statistics/series/data-file-index-page")
     rows = driver.find_elements(By.CSS_SELECTOR, ".table-wrapper tbody > tr")
     links = list(map(_process_row, rows))
-    
-    for xs in links:
-      for x in xs:
-        driver.get(x)
-        # to be complient with RBNZ terms of use:
-        time.sleep(60) 
-    
-    files = []
-    for xs in links:
-      for x in xs:
-        f = os.path.join(wd, _filename_from_url(x))
-        if os.path.exists(f):
-          files.append(f)
   
+  with browser.getHeadlessDriver(wd) as driver:
+    for xs in links:
+      for x in xs:
+        print(f"{x}...")
+        driver.get(x)
+        # to be compliant with RBNZ terms of use:
+        time.sleep(60)
+    
+  files = []
+  for xs in links:
+    for x in xs:
+      f = os.path.join(wd, _filename_from_url(x))
+      if os.path.exists(f):
+        files.append(f)
   return (wd, files)
 
 
