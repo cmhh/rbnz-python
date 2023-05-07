@@ -53,7 +53,7 @@ def download() -> Tuple[str, list[str]]:
         print(f"{x}...")
         driver.get(x)
         # to be compliant with RBNZ terms of use:
-        time.sleep(60)
+        # time.sleep(60)
     
   files = []
   for xs in links:

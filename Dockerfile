@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:23.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV SHELL=/bin/bash
@@ -10,10 +10,10 @@ RUN apt-get update && \
   apt-get --no-install-recommends -y install \
     wget curl unzip gdebi ca-certificates python3 python3-pip python3-venv && \ 
   wget --quiet \
-    https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_111.0.5563.146-1_amd64.deb \
+    https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_112.0.5615.165-1_amd64.deb \
     -O chrome.deb && \
   wget --quiet \
-    https://chromedriver.storage.googleapis.com/111.0.5563.64/chromedriver_linux64.zip && \
+    https://chromedriver.storage.googleapis.com/112.0.5615.49/chromedriver_linux64.zip && \
   gdebi --non-interactive chrome.deb && \
   unzip chromedriver_linux64.zip && \
   mv chromedriver /usr/local/bin/ && \

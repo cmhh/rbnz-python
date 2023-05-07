@@ -57,7 +57,7 @@ To create a database:
 
 ```bash
 docker run --rm \
-  -v $PWD:/data \
+  -v $PWD/data:/data \
   -u $(id -u):$(id -g) \
   rbnz:python \
   /data/rbnz.db
